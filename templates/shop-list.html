@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<!-- START SECTION BREADCRUMB -->
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container"><!-- STRART CONTAINER -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Shop</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb justify-content-md-end">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item active">Shop</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- END CONTAINER-->
+</div>
+<!-- END SECTION BREADCRUMB -->
+
+<!-- START MAIN CONTENT -->
+<div class="main_content">
+
+<!-- START SECTION SHOP -->
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- <div class="row align-items-center mb-4 pb-1">
+                    <div class="col-12">
+                        <div class="product_header">
+                            <div class="product_header_left">
+                                <div class="custom_select">
+                                    <select class="form-control form-control-sm">
+                                        <option value="order">Default sorting</option>
+                                        <option value="popularity">Sort by popularity</option>
+                                        <option value="date">Sort by newness</option>
+                                        <option value="price">Sort by price: low to high</option>
+                                        <option value="price-desc">Sort by price: high to low</option>
+                                        </select>
+                                </div>
+                                </div>
+                                
+                                </div>
+                                </div>
+                                </div>  -->
+                <div class="row shop_container grid">
+                    
+                    {% for book in books  %}
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="product">
+                            
+                                <a href={{book.get_url}}>
+                                    <img src="{{book.images.url}}" alt="product_img2">
+                                </a>
+                                
+                            <div class="product_info">
+                                <h6 class="product_title"><a href={{book.get_url}}>{{book.book_title}}</a></h6>
+                                <div class="product_price">
+                                    <span class="price">&#8358;{{book.price | intcomma}}</span>
+                                    
+                                    {% comment %} <div class="on_sale">
+                                        <span>25% Off</span>
+                                    </div> {% endcomment %}
+                                </div>
+                                <div class="rating_wrap">
+                                    <div class="rating">
+                                        <div class="product_rate" style="width:68%"></div>
+                                    </div>
+                                    <span class="rating_num">(15)</span>
+                                </div>
+                                <div class="pr_desc">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
+                                </div>
+                                <div class="pr_switch_wrap">
+                                    <div class="product_color_switch">
+                                        <span class="active" data-color="#847764"></span>
+                                        <span data-color="#0393B5"></span>
+                                        <span data-color="#DA323F"></span>
+                                    </div>
+                                </div>
+                                <div class="list_product_action_box">
+                                    <ul class="list_none pr_action_btn">
+                                        <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
+                                        <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
+                                        <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
+                                        <li><a href="#"><i class="icon-heart"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+        		
+                {% comment %} <div class="col-12">
+                    <span class="pagination mt-3 justify-content-center pagination_style1">
+                        {% if books.has_previous %}
+                            <li class="page-item active"><a href="?page=1" class="page-link">&laquo; first</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#"><i class="linearicons-arrow-right"><a href="?page={{ books.previous_page_number }}"></a></i></a></li>
+                        {% endif %}
+                
+                        <span class="current active">
+                            Page {{ books.number }} of {{ books.paginator.num_pages }}.
+                        </span>
+                
+                        {% if books.has_next %}
+                            <a href="?page={{ books.next_page_number }}">next</a>
+                            <a href="?page={{ books.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div> {% endcomment %}
+
+                <div class="row">             
+                                        
+                       
+                    <div class="col-12">
+                        {% if books.has_other_pages %}
+                        <ul class="pagination mt-3 justify-content-center pagination_style1">
+                            {% if books.has_previous %} 
+                            <li class="page-item "><a class="page-link" href="?page={{ books.previous_page_number }}"><i class="linearicons-arrow-left"></i></a></li>
+                            {% else %}
+                                                       
+                            <li class="page-item disabled"><a class="page-link" ><i class="linearicons-arrow-left"></i></a></li>
+                            {% endif %}
+
+
+                            <!-- show other pages  -->
+
+                             
+                             {% for i in books.paginator.page_range %}
+                             
+                             {% if books.number == i %}
+                             <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                             {% else %}
+                             <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</i></a></li>
+                                
+                             {% endif %}
+                                
+                                
+                             {% endfor %}
+                                
+                            <!-- end show other pages  -->
+                            {% if books.has_next %} 
+                            <li class="page-item "><a class="page-link" href="?page={{books.next_page_number }}"><i class="linearicons-arrow-right"></i></a></li>
+                            {% else %}
+                                                       
+                            <li class="page-item disabled"><a class="page-link" ><i class="linearicons-arrow-right"></i></a></li>
+                            {% endif %}
+
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+        	</div>
+        </div>
+    </div>
+</div>
+<!-- END SECTION SHOP -->
+
+<!-- START SECTION SUBSCRIBE NEWSLETTER -->
+<div class="section bg_default small_pt small_pb">
+	<div class="container">	
+    	<div class="row align-items-center">	
+            <div class="col-md-6">
+                <div class="heading_s1 mb-md-0 heading_light">
+                    <h3>Subscribe Our Newsletter</h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="newsletter_form">
+                    <form>
+                        <input type="text" required="" class="form-control rounded-0" placeholder="Enter Email Address">
+                        <button type="submit" class="btn btn-dark rounded-0" name="submit" value="Submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- START SECTION SUBSCRIBE NEWSLETTER -->
+
+</div>
+<!-- END MAIN CONTENT -->
+
+{% endblock content %}
