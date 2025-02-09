@@ -11,20 +11,27 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from re import DEBUG
 from django.contrib.messages import constants as messages
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Support env variables from .env file if defined
+import os
+from dotenv import load_dotenv
+env_path = load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x$(=y9j_m6qg2u&9%alan%6g@-9xftln569kh-ow$!*0igj$zt'
-
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-x$(=y9j_m6qg2u&9%alan%6g@-9xftln569kh-ow$!*0igj$zt'
+) 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != False
 
 ALLOWED_HOSTS = []
 
@@ -47,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,9 +131,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static'
+# ]
+STATIC_ROOT = BASE_DIR / 'static'
+
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -144,3 +154,21 @@ AUTHENTICATION_BACKENDS = ['users.models.EmailBackend', 'django.contrib.auth.bac
 
 PAYSTACK_SECRET_KEY = 'sk_test_290624375a8c19168957fb7cb22f2b3e6cd6249c'
 PAYSTACK_PUBLIC_KEY = 'pk_test_017df9ecea9d102fcd4bfe4d27f90a8ec4967f76'
+
+# Update database configuration from $DATABASE_URL environment variable (if defined)
+
+
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=500,
+        conn_health_checks=True,
+    )
+
+# Static file serving.
+# https://whitenoise.readthedocs.io/en/stable/django.html#add-compression-and-caching-support
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
